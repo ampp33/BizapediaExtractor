@@ -1,0 +1,45 @@
+<project>
+
+	<path id="classpath-lib">
+		<fileset dir="build/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+	<target name="lib">
+        <mkdir dir="build/lib"/>
+        <copydir src="lib" dest="build/lib" />
+    </target>
+	
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" classpathref="classpath-lib" />
+    </target>
+	
+    <target name="jar">
+        <jar destfile="build/BizapediaExtractor.jar" basedir="build/classes">
+        	<manifest>
+                <attribute name="Main-Class" value="org.malibu.msu.bizapedia.ui.BizapediaExtractorUi"/>
+            </manifest>
+        </jar>
+    </target>
+	
+	<target name="resources">
+        <mkdir dir="build/resources"/>
+		<copyfile src="resources/template.xlsx" dest="build/resources/template.xlsx"/>
+		<copyfile src="resources/BizapediaExtractor.bat" dest="build/BizapediaExtractor.bat"/>
+    </target>
+	
+	<target name="zip">
+		<!-- build dir cleanup before zipping -->
+		<delete dir="build/classes"/>
+		<zip destfile="build/BizapediaExtractor.zip" basedir="build" />
+	</target>
+
+	<target name="all" depends="clean,lib,compile,jar,resources,zip" />
+	
+</project>
