@@ -65,14 +65,14 @@ public class BizapediaReportSpreadsheet {
 		try(InputStream templateFileStream = new FileInputStream(new File(System.getProperty("workingDir") + TEMPLATE_FILE_PATH))) {
 			wb = WorkbookFactory.create(templateFileStream);
 			sheet = wb.getSheetAt(0); // get first sheet
-			Row headerRow = sheet.getRow(2); // row with labels
+			Row headerRow = sheet.getRow(1); // row with labels
 			
 			// build up map of headers to column indexes
 			for(Cell headerCell : headerRow) {
 				headerToColumnIndexMap.put(headerCell.getStringCellValue(), headerCell.getColumnIndex());
 			}
 			
-			currentRowIndex = 2;
+			currentRowIndex = 1;
 			nextRow(); // prep to start writing rows!
 		}
 	}
