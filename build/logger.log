@@ -1,0 +1,92 @@
+2017-03-02 00:03:54 DEBUG - creating main UI object
+2017-03-02 00:03:57 INFO  - 'Run' button has been clicked
+2017-03-02 00:03:57 DEBUG - asking user for input file
+2017-03-02 00:03:59 DEBUG - asking user for output file location
+2017-03-02 00:04:01 DEBUG - input file path: 'C:\Users\Ampp33\Desktop\input.txt'
+2017-03-02 00:04:01 DEBUG - output file path: 'C:\Users\Ampp33\Desktop\output.xlsx'
+2017-03-02 00:04:01 DEBUG - api key: 'LNNXCURUFYNNFUVWUP'
+2017-03-02 00:04:01 INFO  - kicking off extraction thread handler
+2017-03-02 00:04:01 INFO  - Loading input list...
+2017-03-02 00:04:01 DEBUG - looking for companies listed in the input file...
+2017-03-02 00:04:01 DEBUG - Google
+2017-03-02 00:04:01 DEBUG - 3sixty Technologies
+2017-03-02 00:04:01 DEBUG - Oracle
+2017-03-02 00:04:01 DEBUG - Amazon
+2017-03-02 00:04:01 DEBUG - SummitSports
+2017-03-02 00:04:01 DEBUG - Microsoft
+2017-03-02 00:04:01 DEBUG - Bizapedia
+2017-03-02 00:04:01 DEBUG - Eclipse.org
+2017-03-02 00:04:01 DEBUG - Uber
+2017-03-02 00:04:01 DEBUG - McDonalds
+2017-03-02 00:04:01 DEBUG - Burger King
+2017-03-02 00:04:01 DEBUG - Nikon
+2017-03-02 00:04:01 DEBUG - Canon
+2017-03-02 00:04:01 INFO  - Preparing spreadsheet...
+2017-03-02 00:04:01 DEBUG - initializing output spreadsheet from file: 'C:\Users\Ampp33\workspace_serious\BizapediaServiceClient\build\\resources\template.xlsx'
+2017-03-02 00:04:02 INFO  - Beginning extraction...
+2017-03-02 00:04:02 INFO  - Processing...
+2017-03-02 00:04:02 DEBUG - creating web service wrapper and client with API key 'LNNXCURUFYNNFUVWUP'
+2017-03-02 00:04:03 INFO  - Extracting ( 1 / 13 ): [ company : 'Google' ]
+2017-03-02 00:04:03 DEBUG - calling web service via client with company name 'Google'
+2017-03-02 00:04:04 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:04 DEBUG - company has 4 principles
+2017-03-02 00:04:04 INFO  - Extracting ( 2 / 13 ): [ company : '3sixty Technologies' ]
+2017-03-02 00:04:04 DEBUG - calling web service via client with company name '3sixty Technologies'
+2017-03-02 00:04:07 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:07 DEBUG - company has 4 principles
+2017-03-02 00:04:07 INFO  - Extracting ( 3 / 13 ): [ company : 'Oracle' ]
+2017-03-02 00:04:07 DEBUG - calling web service via client with company name 'Oracle'
+2017-03-02 00:04:08 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:08 DEBUG - company has 4 principles
+2017-03-02 00:04:08 INFO  - saving spreadsheet, to avoid data loss
+2017-03-02 00:04:08 INFO  - saving spreadsheet to filesystem
+2017-03-02 00:04:08 INFO  - Extracting ( 4 / 13 ): [ company : 'Amazon' ]
+2017-03-02 00:04:08 DEBUG - calling web service via client with company name 'Amazon'
+2017-03-02 00:04:09 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:09 DEBUG - company has 4 principles
+2017-03-02 00:04:09 INFO  - Extracting ( 5 / 13 ): [ company : 'SummitSports' ]
+2017-03-02 00:04:09 DEBUG - calling web service via client with company name 'SummitSports'
+2017-03-02 00:04:10 DEBUG - web service call successful, 0 companies returned
+2017-03-02 00:04:10 INFO  - Extracting ( 6 / 13 ): [ company : 'Microsoft' ]
+2017-03-02 00:04:10 DEBUG - calling web service via client with company name 'Microsoft'
+2017-03-02 00:04:10 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:10 DEBUG - company has 4 principles
+2017-03-02 00:04:10 INFO  - saving spreadsheet, to avoid data loss
+2017-03-02 00:04:10 INFO  - saving spreadsheet to filesystem
+2017-03-02 00:04:10 INFO  - Extracting ( 7 / 13 ): [ company : 'Bizapedia' ]
+2017-03-02 00:04:10 DEBUG - calling web service via client with company name 'Bizapedia'
+2017-03-02 00:04:10 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:10 DEBUG - company has 4 principles
+2017-03-02 00:04:10 INFO  - Extracting ( 8 / 13 ): [ company : 'Eclipse.org' ]
+2017-03-02 00:04:10 DEBUG - calling web service via client with company name 'Eclipse.org'
+2017-03-02 00:04:11 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:11 DEBUG - company has 4 principles
+2017-03-02 00:04:11 INFO  - Extracting ( 9 / 13 ): [ company : 'Uber' ]
+2017-03-02 00:04:11 DEBUG - calling web service via client with company name 'Uber'
+2017-03-02 00:04:11 DEBUG - web service call successful, 0 companies returned
+2017-03-02 00:04:11 INFO  - saving spreadsheet, to avoid data loss
+2017-03-02 00:04:11 INFO  - saving spreadsheet to filesystem
+2017-03-02 00:04:11 INFO  - Extracting ( 10 / 13 ): [ company : 'McDonalds' ]
+2017-03-02 00:04:11 DEBUG - calling web service via client with company name 'McDonalds'
+2017-03-02 00:04:12 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:12 DEBUG - company has 4 principles
+2017-03-02 00:04:12 INFO  - Extracting ( 11 / 13 ): [ company : 'Burger King' ]
+2017-03-02 00:04:12 DEBUG - calling web service via client with company name 'Burger King'
+2017-03-02 00:04:14 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:14 DEBUG - company has 4 principles
+2017-03-02 00:04:14 INFO  - Extracting ( 12 / 13 ): [ company : 'Nikon' ]
+2017-03-02 00:04:14 DEBUG - calling web service via client with company name 'Nikon'
+2017-03-02 00:04:15 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:15 DEBUG - company has 4 principles
+2017-03-02 00:04:15 INFO  - saving spreadsheet, to avoid data loss
+2017-03-02 00:04:15 INFO  - saving spreadsheet to filesystem
+2017-03-02 00:04:15 INFO  - Extracting ( 13 / 13 ): [ company : 'Canon' ]
+2017-03-02 00:04:15 DEBUG - calling web service via client with company name 'Canon'
+2017-03-02 00:04:17 DEBUG - web service call successful, 1 companies returned
+2017-03-02 00:04:17 DEBUG - company has 4 principles
+2017-03-02 00:04:17 DEBUG - done making all API calls
+2017-03-02 00:04:17 INFO  - Saving spreadsheet...
+2017-03-02 00:04:17 INFO  - saving spreadsheet to filesystem
+2017-03-02 00:04:17 INFO  - done processing (success: true)
+2017-03-02 00:04:17 DEBUG - notifying user that processing was successful
+2017-03-02 00:06:01 DEBUG - creating main UI object
