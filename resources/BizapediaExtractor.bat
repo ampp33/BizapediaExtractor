@@ -1,4 +1,4 @@
 start javaw -DworkingDir="%~dp0\" ^
-		-Dphantomjs.binary.path="%~dp0resources\phantomjs.exe" ^
-		-cp "%~dp0lib\*;%~dp0LdxSimulationDataExtractor.jar" ^
-		org.malibu.msu.ldx.ui.LdxSimulationDataExtractorUi
+		-Dlog4j.configuration="file:%~dp0resources\log4j.properties" ^
+		-cp "%~dp0lib\*;%~dp0BizapediaExtractor.jar" ^
+		org.malibu.msu.bizapedia.ui.BizapediaExtractorUi

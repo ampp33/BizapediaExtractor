@@ -17,8 +17,12 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import org.malibu.msu.bizapedia.BizapediaExtractionThreadHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BizapediaExtractorUi {
+	
+	private static final Logger log = LoggerFactory.getLogger(BizapediaExtractorUi.class);
 
 	private JFrame frame;
 	private JTextField apiKeyField;
@@ -33,6 +37,7 @@ public class BizapediaExtractorUi {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					log.debug("creating main UI object");
 					BizapediaExtractorUi window = new BizapediaExtractorUi();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -54,7 +59,7 @@ public class BizapediaExtractorUi {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setTitle("Bizapedia Extractor v1.0");
+		frame.setTitle("Bizapedia Extractor v1.2");
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 415, 118);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,6 +79,7 @@ public class BizapediaExtractorUi {
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new Runnable() {
 					public void run() {
+						log.info("'Run' button has been clicked");
 						runButton.setEnabled(false);
 						try {
 							handleExtraction();
@@ -104,6 +110,7 @@ public class BizapediaExtractorUi {
 	
 	private void handleExtraction() {
 		// prompt for input file path
+		log.debug("asking user for input file");
 		JFileChooser inputFileChooser = new JFileChooser();
 		inputFileChooser.setDialogTitle("Select your input text file");
 		inputFileChooser.setFileFilter(new FileFilter() {
@@ -113,16 +120,19 @@ public class BizapediaExtractorUi {
 		int choice = inputFileChooser.showOpenDialog(frame);
 		if(choice != JFileChooser.APPROVE_OPTION) {
 			// halt processing if they don't select a file
+			log.trace("user exited out of input file dialog");
 			return;
 		}
 		
 		// prompt for output file path
+		log.debug("asking user for output file location");
 		JFileChooser outputFileChooser = new JFileChooser();
 		outputFileChooser.setDialogTitle("Specify where to save your output file");
 		outputFileChooser.setSelectedFile(new File("output.xlsx"));
 		choice = outputFileChooser.showSaveDialog(frame);
 		if(choice != JFileChooser.APPROVE_OPTION) {
 			// halt processing if they don't select a file
+			log.trace("user exited out of dest file dialog");
 			return;
 		}
 		
@@ -131,12 +141,20 @@ public class BizapediaExtractorUi {
 				= new BizapediaProcessorConfig(inputFileChooser.getSelectedFile().getAbsolutePath(),
 												outputFileChooser.getSelectedFile().getAbsolutePath(),
 												apiKeyField.getText());
+		log.debug("input file path: '{}'", config.getInputFilePath());
+		log.debug("output file path: '{}'", config.getOutputFilePath());
+		log.debug("api key: '{}'", config.getApiKey());
+		log.info("kicking off extraction thread handler");
 		boolean success = new BizapediaExtractionThreadHandler(this).runExtraction(config);
+		log.info("done processing (success: {})", success);
 		
 		if(success) {
+			log.debug("notifying user that processing was successful");
 			updateStatusOnUi("Done! Success!");
 			JOptionPane.showMessageDialog(frame, "Success!");
 		} else {
+			log.debug("notifying user that processing failed");
+			updateStatusOnUi("Errors were encountered during processing");
 			JOptionPane.showMessageDialog(frame, "An error occurred during processing");
 		}
 	}

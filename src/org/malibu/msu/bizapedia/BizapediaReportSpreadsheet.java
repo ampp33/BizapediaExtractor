@@ -15,8 +15,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BizapediaReportSpreadsheet {
+	
+	private static final Logger log = LoggerFactory.getLogger(BizapediaReportSpreadsheet.class);
 	
 	public static final String TEMPLATE_FILE_PATH = "\\resources\\template.xlsx";
 	
@@ -31,6 +35,7 @@ public class BizapediaReportSpreadsheet {
 	}
 	
 	public void writeValueToColumn(String columnKey, String value) throws IOException {
+		log.trace("writing '{}' to column '{}'", value, columnKey);
 		if(!headerToColumnIndexMap.containsKey(columnKey)) {
 			throw new IOException("bad mapping; mapping config file does not correllate to template file.  bad key: " + columnKey);
 		}
@@ -47,11 +52,13 @@ public class BizapediaReportSpreadsheet {
 	}
 	
 	public void nextRow() {
+		log.trace("moving to the next spreadsheet row");
 		currentRowIndex++;
 		sheet.createRow(currentRowIndex);
 	}
 	
 	public void saveSpreadsheet(String outputFilePath) throws IOException {
+		log.info("saving spreadsheet to filesystem");
 		try(FileOutputStream fos = new FileOutputStream(new File(outputFilePath))) {
 			wb.write(fos);
 		}
@@ -62,6 +69,7 @@ public class BizapediaReportSpreadsheet {
 	}
 	
 	private void initializeFromTemplate() throws EncryptedDocumentException, InvalidFormatException, IOException {
+		log.debug("initializing output spreadsheet from file: '{}'", System.getProperty("workingDir") + TEMPLATE_FILE_PATH);
 		try(InputStream templateFileStream = new FileInputStream(new File(System.getProperty("workingDir") + TEMPLATE_FILE_PATH))) {
 			wb = WorkbookFactory.create(templateFileStream);
 			sheet = wb.getSheetAt(0); // get first sheet

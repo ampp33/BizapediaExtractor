@@ -31,6 +31,7 @@
 	<target name="resources">
         <mkdir dir="build/resources"/>
 		<copyfile src="resources/template.xlsx" dest="build/resources/template.xlsx"/>
+		<copyfile src="resources/log4j.properties" dest="build/resources/log4j.properties"/>
 		<copyfile src="resources/BizapediaExtractor.bat" dest="build/BizapediaExtractor.bat"/>
     </target>
 	

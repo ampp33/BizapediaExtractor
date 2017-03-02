@@ -10,11 +10,15 @@ import java.util.List;
 import org.malibu.msu.bizapedia.ui.BizapediaExtractorUi;
 import org.malibu.msu.bizapedia.ui.BizapediaProcessorConfig;
 import org.malibu.msu.bizapedia.ws.BizapediaWsClientWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import https.www_bizapedia.Company;
 import https.www_bizapedia.Principal;
 
 public class BizapediaExtractionThreadHandler {
+	
+	private static final Logger log = LoggerFactory.getLogger(BizapediaExtractionThreadHandler.class);
 	
 	private BizapediaExtractorUi mainUi;
 	
@@ -27,10 +31,13 @@ public class BizapediaExtractionThreadHandler {
 		List<String> companies = new LinkedList<>();
 		try (BufferedReader reader = new BufferedReader(new FileReader(new File(config.getInputFilePath())))) {
 			String line = null;
+			log.debug("looking for companies listed in the input file...");
 			while((line = reader.readLine()) != null) {
+				log.debug(line);
 				companies.add(line);
 			}
 		} catch (Exception ex) {
+			log.error("failed to load input file, halting processing", ex);
 			updateStatus("Failed to load input list: " + ex.getMessage());
 			return false;
 		}
@@ -40,6 +47,7 @@ public class BizapediaExtractionThreadHandler {
 		try {
 			ss = new BizapediaReportSpreadsheet();
 		} catch (Exception ex) {
+			log.error("failed to prepare output spreadsheet, halting processing", ex);
 			updateStatus("Failed to prepare spreadsheet: " + ex.getMessage());
 			return false;
 		}
@@ -47,7 +55,9 @@ public class BizapediaExtractionThreadHandler {
 		updateStatus("Beginning extraction...");
 		try {
 			executeApiCalls(config, ss, companies);
+			log.debug("done making all API calls");
 		} catch (Exception ex) {
+			log.error("error occurred during processing, halting processing", ex);
 			updateStatus("Error occurred during processing: " + ex.getMessage());
 			return false;
 		} finally {
@@ -55,6 +65,7 @@ public class BizapediaExtractionThreadHandler {
 			try {
 				ss.saveSpreadsheet(config.getOutputFilePath());
 			} catch (Exception ex) {
+				log.error("UNALBE TO SAVE SPREADSHEET.  Either the user was messing with the file, or something very bad happened!", ex);
 				updateStatus("Failed to save spreadsheet!  Error: " + ex.getMessage());
 				return false;
 			}
@@ -65,9 +76,8 @@ public class BizapediaExtractionThreadHandler {
 	
 	private void executeApiCalls(BizapediaProcessorConfig config, BizapediaReportSpreadsheet ss, List<String> listOfCompanyNamesToSearch) throws Exception {
 		updateStatus("Processing...");
+		log.debug("creating web service wrapper and client with API key '{}'", config.getApiKey());
 		BizapediaWsClientWrapper client = new BizapediaWsClientWrapper(config.getApiKey());
-		
-		// TODO: need to save the spreadsheet ever 3 search results or so.  These API calls are precious!  Don't waste any data!!
 		
 		int currentCompanyNum = 0;
 		int totalNumCompanies = listOfCompanyNamesToSearch.size();
@@ -81,31 +91,43 @@ public class BizapediaExtractionThreadHandler {
 			
 			ss.writeValueToColumn("SearchedCompanyName", companyName);
 			
+			log.debug("calling web service via client with company name '{}'", companyName);
 			List<Company> companiesFound = client.lookupCompaniesByName(companyName, "", "");
+			log.debug("web service call successful, {} companies returned", companiesFound.size());
 			
 			for (Company company : companiesFound) {
 				
 				foundCompany = true;
 				boolean foundPrinciple = false;
 				
+				log.trace("writing company '{}' data to spreadsheet", company.getEntityName());
 				writeCompanyToSs(ss, company);
+				log.debug("company '{}' has {} principles", company.getEntityName(), company.getPrincipals().getPrincipal().size());
 				
 				for (Principal principle : company.getPrincipals().getPrincipal()) {
 					
 					foundPrinciple = true;
 					
+					log.trace("writing principle '{}' data to spreadsheet", principle.getPrincipalName());
 					writePrincipleToSs(ss, principle);
+					log.trace("starting a new ss row");
 					ss.nextRow();
 					
 				}
 				
-				if(!foundPrinciple) ss.nextRow();
+				if(!foundPrinciple) {
+					log.trace("no principles found in search results, starting a new ss row");
+					ss.nextRow();
+				}
 			}
 			
-			if(!foundCompany) ss.nextRow();
+			if(!foundCompany) {
+				log.trace("no companies found in search results, starting a new ss row");
+				ss.nextRow();
+			}
 			
 			if(currentCompanyNum % 3 == 0) {
-				updateStatus("Saving spreadsheet every three searches executed...");
+				log.info("saving spreadsheet, to avoid data loss");
 				ss.saveSpreadsheet(config.getOutputFilePath());
 			}
 			
@@ -162,6 +184,7 @@ public class BizapediaExtractionThreadHandler {
 	}
 	
 	private void updateStatus(String text) {
+		log.info(text);
 		mainUi.updateStatusOnUi(text);
 	}
 	
