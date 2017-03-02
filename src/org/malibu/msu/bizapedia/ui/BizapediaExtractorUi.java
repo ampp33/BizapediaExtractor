@@ -105,11 +105,12 @@ public class BizapediaExtractorUi {
 	private void handleExtraction() {
 		// prompt for input file path
 		JFileChooser inputFileChooser = new JFileChooser();
+		inputFileChooser.setDialogTitle("Select your input text file");
 		inputFileChooser.setFileFilter(new FileFilter() {
 			public String getDescription() { return null; }
 			public boolean accept(File f) { return f.getName().toLowerCase().endsWith(".txt"); }
 		});
-		int choice = inputFileChooser.showSaveDialog(frame);
+		int choice = inputFileChooser.showOpenDialog(frame);
 		if(choice != JFileChooser.APPROVE_OPTION) {
 			// halt processing if they don't select a file
 			return;
@@ -117,6 +118,7 @@ public class BizapediaExtractorUi {
 		
 		// prompt for output file path
 		JFileChooser outputFileChooser = new JFileChooser();
+		outputFileChooser.setDialogTitle("Specify where to save your output file");
 		outputFileChooser.setSelectedFile(new File("output.xlsx"));
 		choice = outputFileChooser.showSaveDialog(frame);
 		if(choice != JFileChooser.APPROVE_OPTION) {

@@ -67,6 +67,8 @@ public class BizapediaExtractionThreadHandler {
 		updateStatus("Processing...");
 		BizapediaWsClientWrapper client = new BizapediaWsClientWrapper(config.getApiKey());
 		
+		// TODO: need to save the spreadsheet ever 3 search results or so.  These API calls are precious!  Don't waste any data!!
+		
 		int currentCompanyNum = 0;
 		int totalNumCompanies = listOfCompanyNamesToSearch.size();
 		
@@ -79,7 +81,7 @@ public class BizapediaExtractionThreadHandler {
 			
 			ss.writeValueToColumn("SearchedCompanyName", companyName);
 			
-			List<Company> companiesFound = client.lookupCompaniesByName(companyName, null, null);
+			List<Company> companiesFound = client.lookupCompaniesByName(companyName, "", "");
 			
 			for (Company company : companiesFound) {
 				
@@ -101,6 +103,11 @@ public class BizapediaExtractionThreadHandler {
 			}
 			
 			if(!foundCompany) ss.nextRow();
+			
+			if(currentCompanyNum % 3 == 0) {
+				updateStatus("Saving spreadsheet every three searches executed...");
+				ss.saveSpreadsheet(config.getOutputFilePath());
+			}
 			
 		}
 	}
