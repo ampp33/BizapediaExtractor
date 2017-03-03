@@ -3,9 +3,11 @@ package org.malibu.msu.bizapedia.ui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -33,6 +35,10 @@ public class BizapediaExtractorUi {
 	
 	private JPanel progressBarPanel;
 	private JPanel progressBgPanel;
+	
+	private Font montserratBlack22;
+	private Font montserratRegular12;
+	private Font montserratRegular10;
 
 	/**
 	 * Launch the application.
@@ -54,9 +60,18 @@ public class BizapediaExtractorUi {
 
 	/**
 	 * Create the application.
+	 * @throws IOException 
+	 * @throws FontFormatException 
 	 */
-	public BizapediaExtractorUi() {
+	public BizapediaExtractorUi() throws FontFormatException, IOException {
+		initializeFonts();
 		initialize();
+	}
+	
+	private void initializeFonts() throws FontFormatException, IOException {
+		montserratBlack22 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Black.otf")).deriveFont(22f);
+		montserratRegular12 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Regular.ttf")).deriveFont(12f);
+		montserratRegular10 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Regular.ttf")).deriveFont(10f);
 	}
 
 	/**
@@ -72,13 +87,13 @@ public class BizapediaExtractorUi {
 		frmBizapediaExtractorV.getContentPane().setBackground(Color.WHITE);
 		
 		JLabel lblUsername = new JLabel("Api Key:");
-		lblUsername.setFont(new Font("Montserrat", Font.PLAIN, 12));
+		lblUsername.setFont(montserratRegular12);
 		lblUsername.setForeground(Color.GRAY);
-		lblUsername.setBounds(10, 42, 70, 14);
+		lblUsername.setBounds(8, 45, 70, 14);
 		frmBizapediaExtractorV.getContentPane().add(lblUsername);
 		
 		apiKeyField = new JTextField();
-		apiKeyField.setBounds(70, 40, 230, 20);
+		apiKeyField.setBounds(68, 43, 230, 20);
 		frmBizapediaExtractorV.getContentPane().add(apiKeyField);
 		apiKeyField.setColumns(10);
 		
@@ -99,17 +114,17 @@ public class BizapediaExtractorUi {
 				}).start();
 			}
 		});
-		runButton.setBounds(310, 39, 89, 23);
+		runButton.setBounds(308, 42, 89, 23);
 		frmBizapediaExtractorV.getContentPane().add(runButton);
 		
 		JLabel lblNewLabel = new JLabel("BIZAPEDIA EXTRACTOR");
 		lblNewLabel.setForeground(new Color(100, 205, 196));
-		lblNewLabel.setFont(new Font("Montserrat", Font.BOLD, 22));
-		lblNewLabel.setBounds(9, 0, 342, 33);
+		lblNewLabel.setFont(montserratBlack22);
+		lblNewLabel.setBounds(9, 4, 342, 33);
 		frmBizapediaExtractorV.getContentPane().add(lblNewLabel);
 		
 		JLabel lblV = new JLabel("v1.3");
-		lblV.setBounds(11, 23, 46, 14);
+		lblV.setBounds(11, 27, 46, 14);
 		frmBizapediaExtractorV.getContentPane().add(lblV);
 		
 		JPanel progressForegroundPanel = new JPanel();
@@ -122,7 +137,7 @@ public class BizapediaExtractorUi {
 		statusLabel = new JLabel("");
 		statusLabel.setBounds(8, 4, 391, 14);
 		progressForegroundPanel.add(statusLabel);
-		statusLabel.setFont(new Font("Montserrat", Font.PLAIN, 10));
+		statusLabel.setFont(montserratRegular10);
 		statusLabel.setForeground(Color.WHITE);
 		
 		progressBarPanel = new JPanel();
