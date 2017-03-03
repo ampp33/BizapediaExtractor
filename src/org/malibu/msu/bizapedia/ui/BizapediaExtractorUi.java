@@ -69,7 +69,7 @@ public class BizapediaExtractorUi {
 	}
 	
 	private void initializeFonts() throws FontFormatException, IOException {
-		montserratBlack22 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Black.otf")).deriveFont(22f);
+		montserratBlack22 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Black.ttf")).deriveFont(22f);
 		montserratRegular12 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Regular.ttf")).deriveFont(12f);
 		montserratRegular10 = Font.createFont(Font.TRUETYPE_FONT, BizapediaExtractorUi.class.getClassLoader().getResourceAsStream("Montserrat-Regular.ttf")).deriveFont(10f);
 	}

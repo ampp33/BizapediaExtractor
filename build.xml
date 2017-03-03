@@ -18,6 +18,8 @@
     <target name="compile">
         <mkdir dir="build/classes"/>
         <javac srcdir="src" destdir="build/classes" classpathref="classpath-lib" />
+    	<copyfile src="src/Montserrat-Black.ttf" dest="build/classes/Montserrat-Black.ttf"/>
+    	<copyfile src="src/Montserrat-Regular.ttf" dest="build/classes/Montserrat-Regular.ttf"/>
     </target>
 	
     <target name="jar">
