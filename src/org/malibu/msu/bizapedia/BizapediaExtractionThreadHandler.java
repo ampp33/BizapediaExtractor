@@ -64,9 +64,11 @@ public class BizapediaExtractionThreadHandler {
 			updateStatus("Saving spreadsheet...");
 			try {
 				ss.saveSpreadsheet(config.getOutputFilePath());
+				mainUi.updateProgressOnUi(1);
 			} catch (Exception ex) {
 				log.error("UNALBE TO SAVE SPREADSHEET.  Either the user was messing with the file, or something very bad happened!", ex);
 				updateStatus("Failed to save spreadsheet!  Error: " + ex.getMessage());
+				mainUi.updateProgressOnUi(1); // mark status bar as "complete"
 				return false;
 			}
 		}
@@ -88,6 +90,7 @@ public class BizapediaExtractionThreadHandler {
 			currentCompanyNum++;
 			
 			updateStatus(String.format("Extracting ( %d / %d ): [ company : '%s' ]", currentCompanyNum, totalNumCompanies, companyName));
+			mainUi.updateProgressOnUi(calculatePercentComplete(currentCompanyNum, totalNumCompanies));
 			
 			ss.writeValueToColumn("SearchedCompanyName", companyName);
 			
@@ -186,6 +189,12 @@ public class BizapediaExtractionThreadHandler {
 	private void updateStatus(String text) {
 		log.info(text);
 		mainUi.updateStatusOnUi(text);
+	}
+	
+	private double calculatePercentComplete(int currentItemNumber, int totalItemCount) {
+		double curr = (double)currentItemNumber;
+		double total = (double)totalItemCount;
+		return (curr - 1)/total;
 	}
 	
 }

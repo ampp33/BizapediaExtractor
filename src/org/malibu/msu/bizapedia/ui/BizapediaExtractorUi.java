@@ -19,15 +19,20 @@ import javax.swing.filechooser.FileFilter;
 import org.malibu.msu.bizapedia.BizapediaExtractionThreadHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.swing.JPanel;
+import java.awt.Component;
 
 public class BizapediaExtractorUi {
 	
 	private static final Logger log = LoggerFactory.getLogger(BizapediaExtractorUi.class);
 
-	private JFrame frame;
+	private JFrame frmBizapediaExtractorV;
 	private JTextField apiKeyField;
 	private JLabel statusLabel;
 	private JButton runButton;
+	
+	private JPanel progressBarPanel;
+	private JPanel progressBgPanel;
 
 	/**
 	 * Launch the application.
@@ -39,7 +44,7 @@ public class BizapediaExtractorUi {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					log.debug("creating main UI object");
 					BizapediaExtractorUi window = new BizapediaExtractorUi();
-					window.frame.setVisible(true);
+					window.frmBizapediaExtractorV.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -58,20 +63,23 @@ public class BizapediaExtractorUi {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setTitle("Bizapedia Extractor v1.2");
-		frame.setResizable(false);
-		frame.setBounds(100, 100, 415, 118);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmBizapediaExtractorV = new JFrame();
+		frmBizapediaExtractorV.setTitle("Bizapedia Extractor v1.3");
+		frmBizapediaExtractorV.setResizable(false);
+		frmBizapediaExtractorV.setBounds(100, 100, 415, 122);
+		frmBizapediaExtractorV.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmBizapediaExtractorV.getContentPane().setLayout(null);
+		frmBizapediaExtractorV.getContentPane().setBackground(Color.WHITE);
 		
 		JLabel lblUsername = new JLabel("Api Key:");
+		lblUsername.setFont(new Font("Montserrat", Font.PLAIN, 12));
+		lblUsername.setForeground(Color.GRAY);
 		lblUsername.setBounds(10, 42, 70, 14);
-		frame.getContentPane().add(lblUsername);
+		frmBizapediaExtractorV.getContentPane().add(lblUsername);
 		
 		apiKeyField = new JTextField();
-		apiKeyField.setBounds(90, 39, 194, 20);
-		frame.getContentPane().add(apiKeyField);
+		apiKeyField.setBounds(70, 40, 230, 20);
+		frmBizapediaExtractorV.getContentPane().add(apiKeyField);
 		apiKeyField.setColumns(10);
 		
 		runButton = new JButton("Run");
@@ -81,6 +89,7 @@ public class BizapediaExtractorUi {
 					public void run() {
 						log.info("'Run' button has been clicked");
 						runButton.setEnabled(false);
+						updateProgressOnUi(0);
 						try {
 							handleExtraction();
 						} finally {
@@ -90,22 +99,45 @@ public class BizapediaExtractorUi {
 				}).start();
 			}
 		});
-		runButton.setBounds(304, 38, 89, 23);
-		frame.getContentPane().add(runButton);
+		runButton.setBounds(310, 39, 89, 23);
+		frmBizapediaExtractorV.getContentPane().add(runButton);
 		
-		statusLabel = new JLabel("<status>");
-		statusLabel.setBounds(10, 67, 389, 14);
-		frame.getContentPane().add(statusLabel);
+		JLabel lblNewLabel = new JLabel("BIZAPEDIA EXTRACTOR");
+		lblNewLabel.setForeground(new Color(100, 205, 196));
+		lblNewLabel.setFont(new Font("Montserrat", Font.BOLD, 22));
+		lblNewLabel.setBounds(9, 0, 342, 33);
+		frmBizapediaExtractorV.getContentPane().add(lblNewLabel);
 		
-		JLabel lblNewLabel = new JLabel("Bizapedia Extractor");
-		lblNewLabel.setForeground(new Color(255, 140, 0));
-		lblNewLabel.setFont(new Font("Ubuntu", Font.BOLD, 20));
-		lblNewLabel.setBounds(10, 0, 342, 33);
-		frame.getContentPane().add(lblNewLabel);
+		JLabel lblV = new JLabel("v1.3");
+		lblV.setBounds(11, 23, 46, 14);
+		frmBizapediaExtractorV.getContentPane().add(lblV);
 		
-		JLabel lblV = new JLabel("v1.0");
-		lblV.setBounds(199, 17, 46, 14);
-		frame.getContentPane().add(lblV);
+		JPanel progressForegroundPanel = new JPanel();
+		progressForegroundPanel.setOpaque(false);
+		progressForegroundPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		progressForegroundPanel.setBounds(0, 72, 409, 23);
+		frmBizapediaExtractorV.getContentPane().add(progressForegroundPanel);
+		progressForegroundPanel.setLayout(null);
+		
+		statusLabel = new JLabel("");
+		statusLabel.setBounds(8, 4, 391, 14);
+		progressForegroundPanel.add(statusLabel);
+		statusLabel.setFont(new Font("Montserrat", Font.PLAIN, 10));
+		statusLabel.setForeground(Color.WHITE);
+		
+		progressBarPanel = new JPanel();
+		progressBarPanel.setBackground(new Color(100, 205, 196));
+		progressBarPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		progressBarPanel.setBounds(0, 72, 0, 23);
+		frmBizapediaExtractorV.getContentPane().add(progressBarPanel);
+		progressBarPanel.setLayout(null);
+		
+		progressBgPanel = new JPanel();
+		progressBgPanel.setBackground(Color.GRAY);
+		progressBgPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		progressBgPanel.setBounds(0, 72, 409, 23);
+		frmBizapediaExtractorV.getContentPane().add(progressBgPanel);
+		progressBgPanel.setLayout(null);
 	}
 	
 	private void handleExtraction() {
@@ -117,7 +149,7 @@ public class BizapediaExtractorUi {
 			public String getDescription() { return null; }
 			public boolean accept(File f) { return f.getName().toLowerCase().endsWith(".txt"); }
 		});
-		int choice = inputFileChooser.showOpenDialog(frame);
+		int choice = inputFileChooser.showOpenDialog(frmBizapediaExtractorV);
 		if(choice != JFileChooser.APPROVE_OPTION) {
 			// halt processing if they don't select a file
 			log.trace("user exited out of input file dialog");
@@ -129,7 +161,7 @@ public class BizapediaExtractorUi {
 		JFileChooser outputFileChooser = new JFileChooser();
 		outputFileChooser.setDialogTitle("Specify where to save your output file");
 		outputFileChooser.setSelectedFile(new File("output.xlsx"));
-		choice = outputFileChooser.showSaveDialog(frame);
+		choice = outputFileChooser.showSaveDialog(frmBizapediaExtractorV);
 		if(choice != JFileChooser.APPROVE_OPTION) {
 			// halt processing if they don't select a file
 			log.trace("user exited out of dest file dialog");
@@ -151,11 +183,11 @@ public class BizapediaExtractorUi {
 		if(success) {
 			log.debug("notifying user that processing was successful");
 			updateStatusOnUi("Done! Success!");
-			JOptionPane.showMessageDialog(frame, "Success!");
+			JOptionPane.showMessageDialog(frmBizapediaExtractorV, "Success!");
 		} else {
 			log.debug("notifying user that processing failed");
 			updateStatusOnUi("Errors were encountered during processing");
-			JOptionPane.showMessageDialog(frame, "An error occurred during processing");
+			JOptionPane.showMessageDialog(frmBizapediaExtractorV, "An error occurred during processing");
 		}
 	}
 	
@@ -163,4 +195,9 @@ public class BizapediaExtractorUi {
 		statusLabel.setText(text);
 	}
 	
+	public void updateProgressOnUi(double percentComplete) {
+		double complateProgressBarWidth = (double)progressBgPanel.getWidth();
+		double progressBarWidth = (complateProgressBarWidth * percentComplete);
+		progressBarPanel.setSize((int)progressBarWidth, progressBarPanel.getHeight());
+	}
 }
