@@ -4,7 +4,7 @@ import java.util.List;
 
 import https.www_bizapedia_com.BdmService;
 
-public class BizapediaWsClientWrapper {
+public class BizapediaWsClientWrapper implements BizapediaWsClient {
 	
 	private String apiKey;
 	

@@ -9,7 +9,9 @@ import java.util.List;
 
 import org.malibu.msu.bizapedia.ui.BizapediaExtractorUi;
 import org.malibu.msu.bizapedia.ui.BizapediaProcessorConfig;
+import org.malibu.msu.bizapedia.ws.BizapediaWsClient;
 import org.malibu.msu.bizapedia.ws.BizapediaWsClientWrapper;
+import org.malibu.msu.bizapedia.ws.DummyBizapediaWsClientWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +81,11 @@ public class BizapediaExtractionThreadHandler {
 	private void executeApiCalls(BizapediaProcessorConfig config, BizapediaReportSpreadsheet ss, List<String> listOfCompanyNamesToSearch) throws Exception {
 		updateStatus("Processing...");
 		log.debug("creating web service wrapper and client with API key '{}'", config.getApiKey());
-		BizapediaWsClientWrapper client = new BizapediaWsClientWrapper(config.getApiKey());
+		
+		BizapediaWsClient client = new BizapediaWsClientWrapper(config.getApiKey());
+		if(Boolean.parseBoolean(System.getProperty("testing"))) {
+			client = new DummyBizapediaWsClientWrapper(config.getApiKey());
+		}
 		
 		int currentCompanyNum = 0;
 		int totalNumCompanies = listOfCompanyNamesToSearch.size();
@@ -129,7 +135,7 @@ public class BizapediaExtractionThreadHandler {
 				ss.nextRow();
 			}
 			
-			if(currentCompanyNum % 3 == 0) {
+			if(currentCompanyNum % config.getSaveInterval() == 0) {
 				log.info("saving spreadsheet, to avoid data loss");
 				ss.saveSpreadsheet(config.getOutputFilePath());
 			}

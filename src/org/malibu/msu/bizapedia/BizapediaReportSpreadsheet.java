@@ -58,10 +58,27 @@ public class BizapediaReportSpreadsheet {
 	}
 	
 	public void saveSpreadsheet(String outputFilePath) throws IOException {
-		log.info("saving spreadsheet to filesystem");
-		try(FileOutputStream fos = new FileOutputStream(new File(outputFilePath))) {
+		String tempFilePath = outputFilePath + ".tmp";
+		String backupFilePath =  outputFilePath + ".prev";
+		
+		log.info("saving temp spreadsheet to filesystem");
+		File tempSsFile = new File(tempFilePath);
+		try(FileOutputStream fos = new FileOutputStream(tempSsFile)) {
 			wb.write(fos);
 		}
+		
+		// backing up the existing spreadsheet output file, if it exists
+		log.info("backing up previous spreadsheet");
+		File existingSsFile = new File(outputFilePath);
+		if(existingSsFile.exists()) {
+			File backupSsFile = new File(backupFilePath);
+			backupSsFile.delete(); // delete backup file, if it exists, to avoid issues on the rename
+			existingSsFile.renameTo(backupSsFile);
+		}
+		
+		// rename temp spreadsheet to final output filename
+		log.info("renaming temp spreadsheet to final output filename");
+		tempSsFile.renameTo(existingSsFile);
 	}
 	
 	public int getCurrentRowIndex() {
