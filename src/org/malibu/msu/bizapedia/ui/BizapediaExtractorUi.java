@@ -1,28 +1,41 @@
 package org.malibu.msu.bizapedia.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.malibu.msu.bizapedia.BizapediaExtractionThreadHandler;
+import org.malibu.msu.bizapedia.BizapediaExtractorException;
+import org.malibu.msu.bizapedia.ws.BizapediaApiDefinitions;
+import org.malibu.msu.bizapedia.ws.BizapediaApiMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.swing.JPanel;
-import java.awt.Component;
 
 public class BizapediaExtractorUi {
 	
@@ -31,6 +44,7 @@ public class BizapediaExtractorUi {
 	private static final int DEFAULT_SAVE_INTERVAL = 10;
 
 	private JFrame frmBizapediaExtractor;
+	private JComboBox<BizapediaApiMethod> apiMethodComboBox;
 	private JTextField apiKeyField;
 	private JLabel statusLabel;
 	private JButton runButton;
@@ -42,6 +56,17 @@ public class BizapediaExtractorUi {
 	private Font montserratRegular12;
 	private Font montserratRegular10;
 	private JTextField saveIntervalField;
+	private JTextArea inputParametersTextArea;
+	
+	private static final BizapediaApiMethod[] API_METHODS = new BizapediaApiMethod[] {
+		BizapediaApiDefinitions.LOOKUP_COMPANY_BY_COMPANY_NAME,
+		BizapediaApiDefinitions.LOOKUP_COMPANY_BY_FILE_NUMBER,
+		BizapediaApiDefinitions.LOOKUP_COMPANIES_BY_COMPANY_NAME,
+		BizapediaApiDefinitions.LOOKUP_COMPANIES_BY_PEOPLE,
+		BizapediaApiDefinitions.LOOKUP_TRADEMARKS,
+		BizapediaApiDefinitions.LOOKUP_ADDRESSES
+		
+	};
 
 	/**
 	 * Launch the application.
@@ -82,21 +107,22 @@ public class BizapediaExtractorUi {
 	 */
 	private void initialize() {
 		frmBizapediaExtractor = new JFrame();
-		frmBizapediaExtractor.setTitle("Bizapedia Extractor v1.5");
+		frmBizapediaExtractor.setTitle("Bizapedia Extractor v2.0");
 		frmBizapediaExtractor.setResizable(false);
-		frmBizapediaExtractor.setBounds(100, 100, 415, 146);
+		frmBizapediaExtractor.setBounds(100, 100, 415, 281);
 		frmBizapediaExtractor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmBizapediaExtractor.getContentPane().setLayout(null);
 		frmBizapediaExtractor.getContentPane().setBackground(Color.WHITE);
 		
-		JLabel lblUsername = new JLabel("Api Key:");
-		lblUsername.setFont(montserratRegular12);
-		lblUsername.setForeground(Color.GRAY);
-		lblUsername.setBounds(8, 45, 70, 14);
-		frmBizapediaExtractor.getContentPane().add(lblUsername);
+		JLabel lblApiKey = new JLabel("Api Key:");
+		lblApiKey.setFont(montserratRegular12);
+		lblApiKey.setForeground(Color.GRAY);
+		lblApiKey.setBounds(8, 45, 70, 14);
+		frmBizapediaExtractor.getContentPane().add(lblApiKey);
 		
 		apiKeyField = new JTextField();
-		apiKeyField.setBounds(68, 43, 230, 20);
+		apiKeyField.setBounds(68, 43, 329, 20);
+		apiKeyField.setText(System.getProperty("DEFAULT_API_KEY"));
 		frmBizapediaExtractor.getContentPane().add(apiKeyField);
 		apiKeyField.setColumns(10);
 		
@@ -117,23 +143,23 @@ public class BizapediaExtractorUi {
 				}).start();
 			}
 		});
-		runButton.setBounds(308, 42, 89, 46);
+		runButton.setBounds(308, 119, 89, 91);
 		frmBizapediaExtractor.getContentPane().add(runButton);
 		
-		JLabel lblNewLabel = new JLabel("BIZAPEDIA EXTRACTOR");
-		lblNewLabel.setForeground(new Color(100, 205, 196));
-		lblNewLabel.setFont(montserratBlack22);
-		lblNewLabel.setBounds(9, 4, 342, 33);
-		frmBizapediaExtractor.getContentPane().add(lblNewLabel);
+		JLabel lblAppTitle = new JLabel("BIZAPEDIA EXTRACTOR");
+		lblAppTitle.setForeground(new Color(100, 205, 196));
+		lblAppTitle.setFont(montserratBlack22);
+		lblAppTitle.setBounds(9, 4, 342, 33);
+		frmBizapediaExtractor.getContentPane().add(lblAppTitle);
 		
-		JLabel lblV = new JLabel("v1.5");
-		lblV.setBounds(11, 27, 46, 14);
-		frmBizapediaExtractor.getContentPane().add(lblV);
+		JLabel lblVersion = new JLabel("v2.0");
+		lblVersion.setBounds(11, 27, 46, 14);
+		frmBizapediaExtractor.getContentPane().add(lblVersion);
 		
 		JPanel progressForegroundPanel = new JPanel();
 		progressForegroundPanel.setOpaque(false);
 		progressForegroundPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		progressForegroundPanel.setBounds(0, 96, 409, 23);
+		progressForegroundPanel.setBounds(0, 223, 409, 23);
 		frmBizapediaExtractor.getContentPane().add(progressForegroundPanel);
 		progressForegroundPanel.setLayout(null);
 		
@@ -146,28 +172,74 @@ public class BizapediaExtractorUi {
 		progressBarPanel = new JPanel();
 		progressBarPanel.setBackground(new Color(100, 205, 196));
 		progressBarPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		progressBarPanel.setBounds(0, 96, 0, 23);
+		progressBarPanel.setBounds(0, 223, 0, 23);
 		frmBizapediaExtractor.getContentPane().add(progressBarPanel);
 		progressBarPanel.setLayout(null);
 		
 		progressBgPanel = new JPanel();
 		progressBgPanel.setBackground(Color.GRAY);
 		progressBgPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		progressBgPanel.setBounds(0, 96, 409, 23);
+		progressBgPanel.setBounds(0, 223, 409, 23);
 		frmBizapediaExtractor.getContentPane().add(progressBgPanel);
 		progressBgPanel.setLayout(null);
 		
 		JLabel lblSaveInterval = new JLabel("Save Interval (API calls between saves):");
 		lblSaveInterval.setForeground(Color.GRAY);
 		lblSaveInterval.setFont(new Font("Montserrat", Font.PLAIN, 12));
-		lblSaveInterval.setBounds(8, 70, 246, 14);
+		lblSaveInterval.setBounds(8, 192, 246, 14);
 		frmBizapediaExtractor.getContentPane().add(lblSaveInterval);
 		
 		saveIntervalField = new JTextField();
 		saveIntervalField.setColumns(10);
-		saveIntervalField.setBounds(252, 68, 46, 20);
+		saveIntervalField.setBounds(252, 190, 46, 20);
 		saveIntervalField.setText(Integer.toString(DEFAULT_SAVE_INTERVAL));
 		frmBizapediaExtractor.getContentPane().add(saveIntervalField);
+		
+		JLabel lblApiMethod = new JLabel("Api Method:");
+		lblApiMethod.setForeground(Color.GRAY);
+		lblApiMethod.setFont(new Font("Montserrat", Font.PLAIN, 12));
+		lblApiMethod.setBounds(8, 75, 70, 14);
+		frmBizapediaExtractor.getContentPane().add(lblApiMethod);
+		
+		apiMethodComboBox = new JComboBox<>(new DefaultComboBoxModel<>(API_METHODS));
+		apiMethodComboBox.setBounds(78, 72, 319, 20);
+		apiMethodComboBox.setRenderer(new DefaultListCellRenderer() {
+			@Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if(value instanceof BizapediaApiMethod){
+                	BizapediaApiMethod apiMethod = (BizapediaApiMethod) value;
+                    setText(apiMethod.getApiMethodDescription());
+                }
+                return this;
+            }
+		});
+		apiMethodComboBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange() == ItemEvent.SELECTED) {
+					BizapediaApiMethod apiMethod = (BizapediaApiMethod)e.getItem();
+					inputParametersTextArea.setText(apiMethod.getInputParametersAsString());
+				}
+			}
+		});
+		frmBizapediaExtractor.getContentPane().add(apiMethodComboBox);
+		
+		JLabel lblInputParameters = new JLabel("Input Parameters:");
+		lblInputParameters.setForeground(Color.GRAY);
+		lblInputParameters.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblInputParameters.setBounds(8, 102, 152, 14);
+		frmBizapediaExtractor.getContentPane().add(lblInputParameters);
+		
+		inputParametersTextArea = new JTextArea();
+		inputParametersTextArea.setWrapStyleWord(true);
+		inputParametersTextArea.setBorder(new LineBorder(Color.GRAY));
+		inputParametersTextArea.setLineWrap(true);
+		inputParametersTextArea.setBounds(8, 119, 288, 60);
+		frmBizapediaExtractor.getContentPane().add(inputParametersTextArea);
+		// set text area to contain the currently selected api method on app startup
+		BizapediaApiMethod selectedApiMethod = (BizapediaApiMethod)apiMethodComboBox.getSelectedItem();
+		inputParametersTextArea.setText(selectedApiMethod.getInputParametersAsString());
 	}
 	
 	private void handleExtraction() {
@@ -190,10 +262,12 @@ public class BizapediaExtractorUi {
 		// prompt for input file path
 		log.debug("asking user for input file");
 		JFileChooser inputFileChooser = new JFileChooser();
-		inputFileChooser.setDialogTitle("Select your input text file");
+		inputFileChooser.setDialogTitle("Select your input Excel file");
 		inputFileChooser.setFileFilter(new FileFilter() {
 			public String getDescription() { return null; }
-			public boolean accept(File f) { return f.getName().toLowerCase().endsWith(".txt"); }
+			public boolean accept(File f) { return f.isDirectory()
+														|| f.getName().toLowerCase().endsWith(".xlsx")
+														|| f.getName().toLowerCase().endsWith(".xls"); }
 		});
 		int choice = inputFileChooser.showOpenDialog(frmBizapediaExtractor);
 		if(choice != JFileChooser.APPROVE_OPTION) {
@@ -202,12 +276,12 @@ public class BizapediaExtractorUi {
 			return;
 		}
 		
-		// prompt for output file path
+		// prompt for output dir path
 		log.debug("asking user for output file location");
-		JFileChooser outputFileChooser = new JFileChooser();
-		outputFileChooser.setDialogTitle("Specify where to save your output file");
-		outputFileChooser.setSelectedFile(new File("output.xlsx"));
-		choice = outputFileChooser.showSaveDialog(frmBizapediaExtractor);
+		JFileChooser outputDirChooser = new JFileChooser();
+		outputDirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		outputDirChooser.setDialogTitle("Specify directory to save your output file(s)");
+		choice = outputDirChooser.showSaveDialog(frmBizapediaExtractor);
 		if(choice != JFileChooser.APPROVE_OPTION) {
 			// halt processing if they don't select a file
 			log.trace("user exited out of dest file dialog");
@@ -217,26 +291,30 @@ public class BizapediaExtractorUi {
 		// process
 		BizapediaProcessorConfig config
 				= new BizapediaProcessorConfig(inputFileChooser.getSelectedFile().getAbsolutePath(),
-												outputFileChooser.getSelectedFile().getAbsolutePath(),
+												outputDirChooser.getSelectedFile().getAbsolutePath(),
+												(BizapediaApiMethod)apiMethodComboBox.getSelectedItem(),
 												apiKeyField.getText(),
 												saveInterval);
 		
 		log.debug("input file path: '{}'", config.getInputFilePath());
-		log.debug("output file path: '{}'", config.getOutputFilePath());
+		log.debug("output dir path: '{}'", config.getOutputDirFilePath());
+		log.debug("api method: '{}'", config.getApiMethod().getApiMethodDescription());
 		log.debug("api key: '{}'", config.getApiKey());
-		log.info("kicking off extraction thread handler");
-		boolean success = new BizapediaExtractionThreadHandler(this).runExtraction(config);
-		log.info("done processing (success: {})", success);
 		
-		if(success) {
-			log.debug("notifying user that processing was successful");
-			updateStatusOnUi("Done! Success!");
-			JOptionPane.showMessageDialog(frmBizapediaExtractor, "Success!");
-		} else {
-			log.debug("notifying user that processing failed");
+		log.info("kicking off extraction thread handler");
+		try {
+			new BizapediaExtractionThreadHandler(this).runExtraction(config);
+		} catch (EncryptedDocumentException | InvalidFormatException | IOException | BizapediaExtractorException e) {
+			log.debug("exception was thrown during processing", e);
 			updateStatusOnUi("Errors were encountered during processing");
-			JOptionPane.showMessageDialog(frmBizapediaExtractor, "An error occurred during processing");
+			JOptionPane.showMessageDialog(frmBizapediaExtractor, "An error occurred during processing: " + e.getMessage());
+			return;
 		}
+		
+		log.info("done processing");
+		log.debug("notifying user that processing was successful");
+		updateStatusOnUi("Done! Success!");
+		JOptionPane.showMessageDialog(frmBizapediaExtractor, "Success!");
 	}
 	
 	public void updateStatusOnUi(String text) {
