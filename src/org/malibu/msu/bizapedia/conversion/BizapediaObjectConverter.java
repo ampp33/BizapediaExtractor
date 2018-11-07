@@ -56,9 +56,7 @@ public class BizapediaObjectConverter {
 		BizapediaConvertedApiOutput output = new BizapediaConvertedApiOutput();
 		if(trademark != null) {
 			// TODO: exclude all the XML, or further parse this data?
-			output.getTrademarks().add(ObjectConverter.convertObjectToMap(trademark, "principal", "company", "caseFileHeaderFlagsXml", 
-					"caseFileOwnersXml", "caseFileStatementsXml", "caseFileEventStatementsXml", "priorRegistrationApplicationsXml", "classificationsXml",
-					"correspondentXml", "madridInternationalFilingRequestsXml", "foreignApplicationsXml", "designSearchesXml", "internationalRegistrationXml"));
+			output.getTrademarks().add(ObjectConverter.convertObjectToMap(trademark, "principal", "company"));
 		}
 		return output;
 	}
